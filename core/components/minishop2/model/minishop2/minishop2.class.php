@@ -983,7 +983,13 @@ class miniShop2
      */
     public function invokeEvent($eventName, array $params = array(), $glue = '<br/>')
     {
+        $prevEvent = array();
+        if (isset($this->modx->event->name)) {
+            $prevEvent['name'] = $this->modx->event->name;
+        }
+
         if (isset($this->modx->event->returnedValues)) {
+            $prevEvent['returnedValues'] = $this->modx->event->returnedValues;
             $this->modx->event->returnedValues = null;
         }
 
@@ -1001,6 +1007,10 @@ class miniShop2
             $params = array_merge($params, $this->modx->event->returnedValues);
         }
 
+        foreach ($prevEvent as $method => $value) {
+            $this->modx->event->$method = $value;
+        }
+        
         return array(
             'success' => empty($message),
             'message' => $message,
